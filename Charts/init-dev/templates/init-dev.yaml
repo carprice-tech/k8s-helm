@@ -1,0 +1,28 @@
+{{if eq .Values.environment "dev"}}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ssh-start-ubuntu-configmap
+data:
+  start_dev.sh: |
+    #!/bin/bash
+    apt-get update
+    apt-get install -y openssh-server rsync
+    cp /home/user/.ssh/authorized_keys.ro /home/user/.ssh/authorized_keys
+    chown user:user /home/user/.ssh/authorized_keys
+    sed -i s/"#Port 22"/"Port $SSH_PORT"/ /etc/ssh/sshd_config
+    sed -i s/"Port 22"/"Port $SSH_PORT"/ /etc/ssh/sshd_config
+    service ssh stop
+    service ssh start
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: authorized-keys-configmap
+data:
+  authorized_keys.ro: |
+    {{- range .Values.main.ssh_keys }}
+    {{ . }}
+    {{- end }}
+{{end}}

@@ -1,0 +1,4 @@
+elastic:
+  service_name: "elastic"
+  image: "elasticsearch:7.3.1"
+  replicas: 1

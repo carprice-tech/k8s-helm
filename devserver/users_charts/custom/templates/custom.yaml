@@ -1,0 +1,8 @@
+main:
+  ssh_keys:
+  {{- range .Values.ssh_keys }}
+  - "{{.}}"
+  {{- end}}
+exampleservice:
+  example_service:
+    public_domain: "example-service.{{ .Values.developer }}.example.com"

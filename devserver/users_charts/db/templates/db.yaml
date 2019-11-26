@@ -1,0 +1,9 @@
+{{- range .Values.dbs }}
+{{ .project }}:
+  db:
+    host: "{{ $.Values.db.host }}"
+    port: "{{ $.Values.db.port }}"
+    user: "{{ $.Values.db.user }}"
+    password: "{{ $.Values.db.password }}"
+    name: "{{ .name }}"
+{{- end }}

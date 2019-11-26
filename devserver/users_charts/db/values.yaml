@@ -1,0 +1,3 @@
+dbs:
+  - project: "example"
+    name: "example"

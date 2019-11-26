@@ -1,0 +1,61 @@
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  name: elastic
+spec:
+  ports:
+    - name: "9200"
+      port: 9200
+      targetPort: 9200
+  selector:
+    app: elastic
+  type: ClusterIP
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: elastic
+spec:
+  selector:
+    matchLabels:
+      app: elastic
+  strategy:
+    type: Recreate
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: elastic
+        date: "{{ .Release.Time.Seconds }}"
+    spec:
+      {{- if or (eq .Values.environment "prod") (eq .Values.environment "stage") }}
+      securityContext:
+        fsGroup: 1000
+      {{- end}}
+      containers:
+        - name: elastic
+          image: {{ .Values.elastic.image }}
+          {{- if or (eq .Values.environment "prod") (eq .Values.environment "stage") }}
+          volumeMounts:
+          - name: elastic-persistent-storage
+            mountPath: /usr/share/elasticsearch/data
+          {{- end}}
+          ports:
+            - containerPort: 9200
+          env:
+            - name: ES_JAVA_OPTS
+              value: "-Xms256m -Xmx1024m"
+            - name: xpack.security.enabled
+              value: "false"
+            - name: "discovery.type"
+              value: "single-node"
+      imagePullSecrets:
+        - name: regcred
+      {{- if or (eq .Values.environment "prod") (eq .Values.environment "stage") }}
+      volumes:
+        - name: elastic-persistent-storage
+          cinder:
+            volumeID: {{ .Values.elastic.storageid }}
+            fsType: ext4
+      {{- end}}

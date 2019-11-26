@@ -1,0 +1,18 @@
+{{if or (eq .Values.environment "prod") (eq .Values.environment "stage") }}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: grafana-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/whitelist-source-range: "{{ .Values.main.http_white_list }}"
+spec:
+  rules:
+  - host: "{{ .Values.grafana.public_domain }}"
+    http:
+      paths:
+      - backend:
+          serviceName: grafana
+          servicePort: 3000
+{{end}}

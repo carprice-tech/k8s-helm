@@ -1,0 +1,9 @@
+domains:
+  - project: "rabbitmq"
+    name: "rabbitmq"
+  - project: "jaeger"
+    name: "jaeger"
+  - project: "minio"
+    name: "minio"
+  - project: "elastic"
+    name: "elastic"

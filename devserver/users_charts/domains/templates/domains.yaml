@@ -1,0 +1,4 @@
+{{- range .Values.domains }}
+{{ .project }}:
+  public_domain: "example-{{ .name }}.{{ $.Values.developer }}.example.com"
+{{- end }}

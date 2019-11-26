@@ -1,0 +1,4 @@
+rabbitmq:
+  image: "rabbitmq/rabbitmq:management-3.7.17"
+  public_port5672: 31100
+  public_port15672: 31101
